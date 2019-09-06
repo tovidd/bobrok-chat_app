@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, ListView } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
  
-export default class HomeScreen extends React.Component {
+export default class StoreScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center'}}>

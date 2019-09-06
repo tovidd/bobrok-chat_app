@@ -29,7 +29,7 @@ import {
 } from 'react-native-popup-menu';
 
 //import createStackNavigator, createBottomTabNavigator, createAppContainer in our project
-import HomeScreen from './pages/HomeScreen';
+import StoreScreen from './pages/StoreScreen';
 import SettingsScreen from './pages/SettingsScreen';
 import ChatScreen from './pages/ChatScreen';
 import ProfileScreen from './pages/ProfileScreen';
@@ -43,21 +43,21 @@ const Mytheme= {
   activeNavIcon: 'black',
   inactiveNavIcon: 'black',
 };
-const FriendsStack = createStackNavigator(
+const FriendsStack= createStackNavigator(
   {
     Friends: { screen: FriendsScreen },
     Chat: { screen: ChatScreen },
   },
   {
     defaultNavigationOptions: {
-      title: 'Bobrok friends', 
+      title: 'Bobrok Friends', 
     },
   }, 
 );
 
-const HomeStack= createStackNavigator(
+const StoreStack= createStackNavigator(
   {
-    Home: { screen: HomeScreen },
+    Store: { screen: StoreScreen },
   },
   {
     defaultNavigationOptions: {
@@ -73,7 +73,7 @@ const HomeStack= createStackNavigator(
     },
   }
 );
-const SettingsStack = createStackNavigator(
+const SettingsStack= createStackNavigator(
   {
     Settings: { screen: SettingsScreen },
     Profile: { screen: ProfileScreen },
@@ -81,17 +81,13 @@ const SettingsStack = createStackNavigator(
   {
     defaultNavigationOptions: {
       title: 'Bobrok Settings',
-      headerStyle: {
-        backgroundColor: '#42f44b',
-      },
-      headerTintColor: '#FFFFFF',
     },
   }
 );
-const Nav = createBottomTabNavigator(
+const Nav= createBottomTabNavigator(
   {
     Friends: { screen: FriendsStack },
-    Home: { screen: HomeStack },
+    Store: { screen: StoreStack },
     Settings: { screen: SettingsStack },
   },
   {
@@ -102,7 +98,7 @@ const Nav = createBottomTabNavigator(
         let iconName;
         if (routeName === 'Friends') {
           iconName = `user-friends${focused ? '' : ''}`;
-        } else if (routeName === 'Home') {
+        } else if (routeName === 'Store') {
           iconName = `search-dollar${focused ? '' : ''}`;
         } else if (routeName === 'Settings') {
           iconName = `user-circle${focused ? '' : ''}`;

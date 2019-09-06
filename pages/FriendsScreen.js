@@ -1,33 +1,21 @@
 //This is an example code for Bottom Navigation//
 import React from 'react';
 //import react in our code.
-import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Image, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Image, Dimensions, ActivityIndicator } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { Icon } from 'react-native-elements';
+import { Icon, List, ListItem, Badge, SearchBar } from 'react-native-elements';
 // import console = require('console');
  
 export default class FriendsScreen extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      data: [
-        {nama: 'Android', chat: {dia: {pesan: 'hi android', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar  android,?', tanggal: '4:20 P.M'}}, foto: require('./../images/android.jpg'), pesan_baru: 3}, 
-        {nama: 'iOS', chat: {dia: {pesan: 'hi ios', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar ios,?', tanggal: '07:23 A.M'}}, foto: require('./../images/ios.jpg'), pesan_baru: 1}, 
-        {nama: 'Java', chat: {dia: {pesan: 'hi java', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar java,?', tanggal: '01/09/19'}}, foto: require('./../images/java.jpg'), pesan_baru: 13}, 
-        {nama: 'Swift', chat: {dia: {pesan: 'hi swift', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar swift,?', tanggal: '01/09/19'}}, foto: require('./../images/swift.jpg'), pesan_baru: 3},  
-        {nama: 'Php', chat: {dia: {pesan: 'hi php', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar php,?', tanggal: '31/08/19'}}, foto: require('./../images/php.jpg'), pesan_baru: 6}, 
-        {nama: 'Hadoop', chat: {dia: {pesan: 'hi hadoop', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar hadoop,?', tanggal: '30/08/19'}}, foto: require('./../images/hadoop.jpg'), pesan_baru: 36}, 
-        {nama: 'flutter', chat: {dia: {pesan: 'hi flutter', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar flutter,?', tanggal: '30/08/19'}}, foto: require('./../images/flutter.jpg'), pesan_baru: 193}, 
-        {nama: 'golang', chat: {dia: {pesan: 'hi golang', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar golang,?', tanggal: '30/08/19'}}, foto: require('./../images/golang.jpg'), pesan_baru: 1}, 
-        {nama: 'kotlin', chat: {dia: {pesan: 'hi kotlin', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar kotlin,?', tanggal: '30/08/19'}}, foto: require('./../images/kotlin.jpg'), pesan_baru: 2}, 
-        {nama: 'prolog', chat: {dia: {pesan: 'hi prolog', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar prolog,?', tanggal: '30/08/19'}}, foto: require('./../images/prolog.jpg'), pesan_baru: 2}, 
-        {nama: 'python', chat: {dia: {pesan: 'hi python', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar python,?', tanggal: '30/08/19'}}, foto: require('./../images/python.jpg'), pesan_baru: 5789}, 
-        {nama: 'react-native', chat: {dia: {pesan: 'hi react-native', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar react-native,?', tanggal: '30/08/19'}}, foto: require('./../images/react-native.jpg'), pesan_baru: 1}, 
-        {nama: 'ruby', chat: {dia: {pesan: 'hi ruby', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar ruby,?', tanggal: '30/08/19'}}, foto: require('./../images/ruby.jpg'), pesan_baru: 4}, 
-      ],
       dataSource: null, 
-      isLoading: false,
-    }
+      isLoading: true,
+      base_url: 'http://192.168.43.104:81/bobrok/',
+      base_url_image: 'http://192.168.43.104:81/bobrok/images/', 
+      search: '', 
+    };
   };
 
   static navigationOptions= {
@@ -50,14 +38,46 @@ export default class FriendsScreen extends React.Component {
     );  
   };
 
+  renderHeader= ()=> {
+    const { search } = this.state;
+    return(
+      <SearchBar 
+        placeholder="Type any . . . ." DarkTheme round
+      />
+    );
+  };
+
+  keyExtractor= (item, index) => index.toString()
+
+  renderItem= ({ item }) => (
+    item.user.id == 1 ? null :
+    <ListItem
+      onPress={()=> this.props.navigation.navigate('Chat', {items: item,})}
+      containerStyle={{backgroundColor: 'black', borderTopWidth: 1, borderColor: 'red'}}
+      title={item.user.username}
+      titleStyle={{color: 'white'}}
+      subtitle={item.user.status}
+      subtitleStyle={{color: 'gray'}}
+      leftAvatar={{ 
+        source: item.user.pic && { uri: item.user.pic }, 
+        title: item.user.real_name
+      }}
+      badge={{ value: item.user.unread, textStyle: { color: 'white' }, containerStyle: { marginTop: -20 }, status: 'success' }}      
+      bottomDivider
+      chevron
+    /> 
+  )
+
   componentDidMount(){
-    return fetch('http://192.168.43.104:81/bobrok/api/user')
+    return fetch(this.state.base_url+'api/user')
           .then((response)=> response.json())
           .then((responseJson)=> {
-            this.setState({
-              isLoading: false,
-              dataSource: responseJson,
-            })
+              this.setState(
+              {
+                isLoading: false,
+                dataSource: responseJson,
+              }, 
+            )
           })
           .catch((error)=> {
             console.log(error);
@@ -66,40 +86,55 @@ export default class FriendsScreen extends React.Component {
 
   render() {
     return (
-      <View style={{backgroundColor: '#333333', height: '100%', width: '100%'}}> 
-        <View>
-          <View style={{height: 1, width: "100%", backgroundColor: "red", top: 1, zIndex: 1}} />
-          <FlatList  
-              // data={this.state.data}
-              data={this.state.dataSource}
-              renderItem={({item})=> 
-                <TouchableOpacity style={{backgroundColor: 'black'}} 
-                onPress={() => this.props.navigation.navigate('Chat', {items: item,})}>
-                  <View style={styles.chat}>
-                    <View style={styles.profile}>
-                      <Image style={styles.photo} source={{uri: item.user.pic}} />
-                    </View>
-                    <View style={styles.tulisan}>
-                      <Text style={styles.nama}>{item.user.username}</Text>
-                      <Text style={styles.konten} >{item.sender.message}</Text>
-                    </View>
-                    <View style={styles.tanggal}>
-                      <Text style={{fontSize: 14, padding: 8, color: 'gray', bottom: -5, right: 0}}>{item.sender.created_at}</Text>
-                      <View  style={{padding: 8, top: -5, right: 0, alignSelf: 'flex-end'}}> 
-                        {item.user.unread <= 0 ? null : <Text style={{borderRadius: 30, backgroundColor: '#3fd62a', padding: 5, minWidth: 25, textAlign: 'center'}}>{item.user.unread}</Text> }
-                      </View>
-                    </View>
-                  </View>
-                </TouchableOpacity>}
-              ItemSeparatorComponent={this.renderSeparator}
-              keyExtractor={(item, index)=> item.user.id}
-          />
-          <View style={{height: 1, width: "100%", backgroundColor: "red", bottom: 2}} />
-        </View>
-      </View>
+        <FlatList
+          data= {this.state.dataSource}
+          renderItem={this.renderItem}
+          keyExtractor={this.keyExtractor}
+          ListHeaderComponent={this.renderHeader}
+        />
     );
   }
+
+  Comment(){
+  // <View style={{backgroundColor: '#333333', height: '100%', width: '100%'}}> 
+  //   <View>
+  //     <View style={{height: 1, width: "100%", backgroundColor: "red", top: 1, zIndex: 1}} />
+  //     <FlatList  
+  //         // data={this.state.data}
+  //         data={this.state.dataSource}
+  //         renderItem={({item})=> 
+  //           <TouchableOpacity style={{backgroundColor: 'black'}} 
+  //           onPress={() => this.props.navigation.navigate('Chat', {items: item,})}>
+  //             <View style={styles.chat}>
+  //               <View style={styles.profile}>
+  //                 <Image style={styles.photo} source={{uri: item.user.pic}} />
+  //               </View>
+  //               <View style={styles.tulisan}>
+  //                 <Text style={styles.nama}>{item.user.username}</Text>
+  //                 <Text style={styles.konten} >{item.sender.message}</Text>
+  //               </View>
+  //               <View style={styles.tanggal}>
+  //                 <Text style={{fontSize: 14, padding: 8, color: 'gray', bottom: -5, right: 0}}>{item.sender.created_at}</Text>
+  //                 <View  style={{padding: 8, top: -5, right: 0, alignSelf: 'flex-end'}}> 
+  //                   {item.user.unread <= 0 ? null : <Text style={{borderRadius: 30, backgroundColor: '#3fd62a', padding: 5, minWidth: 25, textAlign: 'center'}}>{item.user.unread}</Text> }
+  //                 </View>
+  //               </View>
+  //             </View>
+  //           </TouchableOpacity>}
+  //         ItemSeparatorComponent={this.renderSeparator}
+  //         keyExtractor={(item, index)=> item.user.id}
+  //     />
+  //     <View style={{height: 1, width: "100%", backgroundColor: "red", bottom: 2}} />
+  //   </View>
+  // </View>
+  return(
+    <View></View>
+  );
+};
 }
+
+
+
 const styles = StyleSheet.create({
   container: {  
     flex: 1,
@@ -148,3 +183,4 @@ const styles = StyleSheet.create({
 
 // https://www.javatpoint.com/react-native-flatlist
 // https://medium.com/differential/react-native-basics-how-to-use-the-listview-component-a0ec44cf1fe8
+// https://react-native-training.github.io/react-native-elements/docs/badge.html

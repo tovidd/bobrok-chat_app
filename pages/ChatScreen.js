@@ -45,8 +45,17 @@ export default class ChatScreen extends Component {
                 message: 'XXX XXX XXX XXX'
             }
         };
-        const temp= {nama: 'ruby', chat: {dia: {pesan: 'hi ruby', tanggal: '11/11/11'}, dia:{pesan: 'apa kabar ruby,?', tanggal: '30/08/19'}}, foto: require('./../images/ruby.jpg'), pesan_baru: 4};
-        const items= navigation.getParam('items', temp1);
+        const temp2= {
+            user: {
+                id: 555,
+                username: 'XXX'
+            },
+            chat: {
+                message: 'XXX XXX XXX XXX'
+            }, 
+        };
+        // const items= navigation.getParam('items', temp1);
+        const items= navigation.getParam('items', temp2);
         return ( 
             <View style={styles.container}>
                 <Image source={{uri: items.user.pic}} style={styles.photo} />
@@ -57,16 +66,30 @@ export default class ChatScreen extends Component {
                 <View style={{height: 30}}></View>
 
                 {
-                    items.sender == null ? null : 
+                    items.chat == null ? null : 
                     <FlatList  
-                        style={{backgroundColor: 'green', flexShrink: 1}}
-                        data={items.sender}
+                        style={{flexShrink: 1}}
+                        data={items.chat}
                         renderItem={({item})=> 
-                            <View style={{left: 5, maxWidth: '70%', alignSelf: 'flex-start',}}>
-                                <View style={{backgroundColor: 'black', borderRadius: 30, borderWidth: 1, borderColor: 'red', alignItems: 'center'}}>
-                                    <Text style={{padding: 10, paddingRight: 15, paddingLeft: 15, color: 'yellow', textAlign: 'justify'}}>{item.message}</Text>
-                                </View>
-                            </View>
+                            item.id_recipient == 1 ? 
+                                <View style={{left: 5, maxWidth: '70%', alignSelf: 'flex-start', flexDirection: 'row'}}>
+                                    <View style={{backgroundColor: 'black', borderRadius: 30, borderWidth: 1, borderColor: 'red', alignItems: 'center'}}>
+                                        <Text style={{padding: 10, paddingRight: 15, paddingLeft: 15, color: 'yellow', textAlign: 'justify'}}>{item.message}</Text>
+                                    </View>
+                                    <View style={{height: '100%'}}>
+                                        <Text style={{position: 'absolute', bottom: 0, color: 'white', borderColor: 'black'}}>{(item.created_at).substring(0, 10)}</Text>
+                                    </View>
+                                </View> 
+                                : item.id_sender == 1 ? 
+                                <View style={{maxWidth: '70%', right: 5, alignSelf: 'flex-end', flexDirection: 'row'}}>
+                                    <View style={{height: '100%'}}>
+                                        <Text style={{position: 'absolute', bottom: 0, right: 0, color: 'white', borderColor: 'black'}}>{(item.created_at).substring(0, 10)}</Text>
+                                    </View>
+                                    <View style={{backgroundColor: 'yellow', borderRadius: 30, borderWidth: 1, borderColor: 'red', alignItems: 'center', }}>
+                                        <Text style={{padding: 10, paddingRight: 15, paddingLeft: 15, color: 'black', textAlign: 'justify'}}>{item.message},?</Text>
+                                    </View>
+                                </View> 
+                                : null
                         }
                         ItemSeparatorComponent={this.renderSeparator}
                         keyExtractor={(item, index)=> item.id}
@@ -74,23 +97,6 @@ export default class ChatScreen extends Component {
                 }
 
                 <View style={{height: 5}}></View>
-
-                {
-                    items.recipient == null ? null : 
-                    <FlatList  
-                        style={{backgroundColor: 'red', flexShrink: 1}}
-                        data={items.recipient}
-                        renderItem={({item})=> 
-                            <View style={{maxWidth: '70%', right: 5, alignSelf: 'flex-end'}}>
-                                <View style={{backgroundColor: 'yellow', borderRadius: 30, borderWidth: 1, borderColor: 'red', alignItems: 'center', }}>
-                                    <Text style={{padding: 10, paddingRight: 15, paddingLeft: 15, color: 'black', textAlign: 'justify'}}>{item.message},?</Text>
-                                </View>
-                            </View>
-                        }
-                        ItemSeparatorComponent={this.renderSeparator}
-                        keyExtractor={(item, index)=> item.id}
-                    />
-                }
 
 
                 {/* <View style={{height: 30}}></View>
