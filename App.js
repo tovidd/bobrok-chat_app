@@ -35,25 +35,49 @@ import ChatScreen from './pages/ChatScreen';
 import ProfileScreen from './pages/ProfileScreen';
 import FriendsScreen from './pages/FriendsScreen';
 
-const Mytheme= {
-  theme: 'black',
-  header: 'yellow',
-  activeNavBar: 'yellow',
-  inactiveNavBar: 'gray',
-  activeNavIcon: 'black',
-  inactiveNavIcon: 'black',
-};
+
+
+
+export default class App extends React.Component {
+  constructor(props)
+  {
+    super(props);
+  }
+  render(){
+    return(
+      <AppContainer></AppContainer>
+    )
+  }
+}
+
 const FriendsStack= createStackNavigator(
   {
-    Friends: { screen: FriendsScreen },
-    Chat: { screen: ChatScreen },
+      Friends: { 
+        screen: FriendsScreen, 
+        navigationOptions: {
+          title: 'Bobrok Friends', 
+        }
+      },
+      Chat: { 
+        screen: ChatScreen,
+        navigationOptions: {
+          title: 'Bobrok Chats', 
+          header: null, 
+        },
+      },
   },
-  {
-    defaultNavigationOptions: {
-      title: 'Bobrok Friends', 
-    },
-  }, 
 );
+
+FriendsStack.navigationOptions= ({navigation})=> {
+  let tabBarVisible= true;
+  if(navigation.state.index > 0)
+  {
+    tabBarVisible= false;
+  }
+  return {
+    tabBarVisible,
+  };
+};
 
 const StoreStack= createStackNavigator(
   {
@@ -73,6 +97,7 @@ const StoreStack= createStackNavigator(
     },
   }
 );
+
 const SettingsStack= createStackNavigator(
   {
     Settings: { screen: SettingsScreen },
@@ -84,6 +109,7 @@ const SettingsStack= createStackNavigator(
     },
   }
 );
+
 const Nav= createBottomTabNavigator(
   {
     Friends: { screen: FriendsStack },
@@ -107,23 +133,13 @@ const Nav= createBottomTabNavigator(
         return <IconComponent name={iconName} size={25} color={tintColor} />; 
       },
     }),
-    navigationOptions: {
-      tabBarLabel: 'BBB',
-    },
     tabBarOptions: {
-      activeTintColor: Mytheme.activeNavIcon, 
-      inactiveTintColor: Mytheme.inactiveNavIcon,
-      activeBackgroundColor: Mytheme.activeNavBar,
-      inactiveBackgroundColor: Mytheme.inactiveNavBar,
+      activeTintColor: 'black', 
+      inactiveTintColor: 'black',
+      activeBackgroundColor: 'yellow',
+      inactiveBackgroundColor: 'gray',
     }, 
   },
 );
 
 const AppContainer= createAppContainer(Nav);
-export default class App extends React.Component {
-  render(){
-    return(
-      <AppContainer></AppContainer>
-    )
-  }
-}

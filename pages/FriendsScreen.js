@@ -1,10 +1,13 @@
-//This is an example code for Bottom Navigation//
+
 import React from 'react';
-//import react in our code.
-import { Text, View, TouchableOpacity, StyleSheet, FlatList, Alert, Image, Dimensions, ActivityIndicator } from 'react-native';
+import { 
+  Text, View, TouchableOpacity, StyleSheet, 
+  FlatList, Alert, Image, Dimensions, ActivityIndicator, 
+} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Icon, List, ListItem, Badge, SearchBar } from 'react-native-elements';
-// import console = require('console');
+import LinearGradient from 'react-native-linear-gradient';
+
  
 export default class FriendsScreen extends React.Component {
   constructor (props) {
@@ -34,7 +37,7 @@ export default class FriendsScreen extends React.Component {
 
   renderSeparator = () => {  
     return (  
-      <View style={{height: 1, width: "100%", backgroundColor: "red"}} />  
+      <View style={{height: 1, width: "100%", backgroundColor: "red"}} ></View> 
     );  
   };
 
@@ -47,13 +50,22 @@ export default class FriendsScreen extends React.Component {
     );
   };
 
+  renderFooter= ()=> {
+    if(!this.state.isLoading) return null;
+    return(
+      <View style={{paddingVertical: 20, borderTopWidth: 1, borderTopColor: "red"}}>
+        <ActivityIndicator animating size='large'/>
+      </View>
+    );
+  };
+
   keyExtractor= (item, index) => index.toString()
 
   renderItem= ({ item }) => (
     item.user.id == 1 ? null :
     <ListItem
       onPress={()=> this.props.navigation.navigate('Chat', {items: item,})}
-      containerStyle={{backgroundColor: 'black', borderTopWidth: 1, borderColor: 'red'}}
+      containerStyle={{backgroundColor: 'black'}}
       title={item.user.username}
       titleStyle={{color: 'white'}}
       subtitle={item.user.status}
@@ -62,10 +74,10 @@ export default class FriendsScreen extends React.Component {
         source: item.user.pic && { uri: item.user.pic }, 
         title: item.user.real_name
       }}
-      badge={{ value: item.user.unread, textStyle: { color: 'white' }, containerStyle: { marginTop: -20 }, status: 'success' }}      
+      badge={{ value: item.user.unread, textStyle: { color: 'white' }, containerStyle: { marginTop: -20 }, status: 'success' }}
       bottomDivider
       chevron
-    /> 
+    />
   )
 
   componentDidMount(){
@@ -91,6 +103,7 @@ export default class FriendsScreen extends React.Component {
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
           ListHeaderComponent={this.renderHeader}
+          ListFooterComponent={this.renderFooter}
         />
     );
   }
